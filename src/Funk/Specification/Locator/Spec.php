@@ -17,14 +17,24 @@ class Spec implements SpecificationLocator
 
     public function locateSpecifications(Suite $suite, $locator)
     {
-        $iterator = new \RegexIterator(
+        $iterator = $this->getFilesIterator($locator);
+
+        return new Iterator($suite, $iterator, $this->basePath);
+    }
+
+    private function getFilesIterator($locator)
+    {
+        $path = $this->findAbsolutePath($locator);
+        if (!is_dir($path)) {
+            return new \ArrayIterator([new \SplFileInfo($path)]);
+        }
+
+        return new \RegexIterator(
             new \RecursiveIteratorIterator(
-                new \RecursiveDirectoryIterator($this->findAbsolutePath($locator))
+                new \RecursiveDirectoryIterator($path)
             ), '/^.+\.php$/i',
             \RegexIterator::MATCH
         );
-
-        return new Iterator($suite, $iterator, $this->basePath);
     }
 
     private function findAbsolutePath($path)
