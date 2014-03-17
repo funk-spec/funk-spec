@@ -30,7 +30,7 @@ class Example extends \ArrayIterator implements SpecificationIterator
             if (0 !== strpos($method->getName(), 'it_')) {
                 continue;
             }
-            $result[] = new InvokableMethod($method, $spec);
+            $result[] = new InvokableMethod($method);
         }
 
         return $result;

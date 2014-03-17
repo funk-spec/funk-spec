@@ -15,6 +15,14 @@ class Spec implements SpecificationLocator
         $this->basePath = $basePath;
     }
 
+    public function getLocatorExamples()
+    {
+        return [
+            'tests',
+            'tests/a/class.php',
+        ];
+    }
+
     public function locateSpecifications(Suite $suite, $locator)
     {
         $iterator = $this->getFilesIterator($locator);
@@ -47,10 +55,10 @@ class Spec implements SpecificationLocator
             return false;
         }
 
-        if (is_file($this->basePath . DIRECTORY_SEPARATOR . $path)
-            || is_dir($this->basePath . DIRECTORY_SEPARATOR . $path)
+        if (is_file($this->basePath . '/' . $path)
+            || is_dir($this->basePath . '/' . $path)
         ) {
-            return realpath($this->basePath . DIRECTORY_SEPARATOR . $path);
+            return realpath($this->basePath . '/' . $path);
         }
 
         return false;

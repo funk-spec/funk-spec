@@ -6,7 +6,7 @@ use Behat\Testwork\Call\CallResult;
 use Exception;
 use Behat\Testwork\Tester\Result\TestResult;
 
-class ExampleTestResult extends TestResult
+class ExampleTestResult implements TestResult
 {
     /**
      * @var null|CallResult
@@ -28,6 +28,11 @@ class ExampleTestResult extends TestResult
     public function hasException()
     {
         return $this->callResult->hasException();
+    }
+
+    public function isPassed()
+    {
+        return $this->getResultCode() === static::PASSED;
     }
 
     /**

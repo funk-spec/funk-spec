@@ -14,15 +14,32 @@ use Symfony\Component\DependencyInjection\Definition;
 use Symfony\Component\DependencyInjection\Reference;
 use Funk\Hook\ServiceContainer\HookExtension;
 use Behat\Testwork\Autoloader\ServiceContainer\AutoloaderExtension;
+use Behat\Testwork\ServiceContainer\ServiceProcessor;
 
 class TesterExtension extends BaseExtension
 {
     const SPEC_LOCATOR_ID = 'locator.spec';
+    const INITIALIZER_TAG = 'spec.initializer';
+
+    private $processor;
+
+    public function __construct(ServiceProcessor $processor = null)
+    {
+        parent::__construct($processor);
+        $this->processor = $processor ? : new ServiceProcessor;
+    }
 
     public function load(ContainerBuilder $container, array $config)
     {
         parent::load($container, $config);
         $this->loadAutoloadSuiteSetup($container);
+        $this->loadEnvironmentHandler($container);
+    }
+
+    public function process(ContainerBuilder $container)
+    {
+        parent::process($container);
+        $this->loadInitializers($container);
     }
 
     /**
@@ -32,18 +49,6 @@ class TesterExtension extends BaseExtension
      * @param Boolean          $strict
      * @param Boolean          $skip
      */
-    protected function loadExerciseController(ContainerBuilder $container, $strict = false, $skip = false)
-    {
-        $definition = new Definition('Funk\Tester\Cli\ExerciseController', array(
-            new Reference(SuiteExtension::REGISTRY_ID),
-            new Reference(SpecificationExtension::FINDER_ID),
-            new Reference(self::EXERCISE_ID),
-            $strict,
-            $skip
-        ));
-        $definition->addTag(CliExtension::CONTROLLER_TAG, array('priority' => 0));
-        $container->setDefinition(CliExtension::CONTROLLER_TAG . '.exercise', $definition);
-    }
 
     /**
      * Loads Specification tester.
@@ -53,22 +58,22 @@ class TesterExtension extends BaseExtension
     protected function loadSpecificationTester(ContainerBuilder $container)
     {
         $definition = new Definition('Funk\Tester\SpecTester', [
-            new Reference(self::SPECIFICATION_TESTER.'.example.event_dispatcher'),
+            new Reference(self::SPECIFICATION_TESTER_ID.'.example.event_dispatcher'),
             new Reference(EventDispatcherExtension::DISPATCHER_ID),
         ]);
-        $container->setDefinition(self::SPECIFICATION_TESTER, $definition);
+        $container->setDefinition(self::SPECIFICATION_TESTER_ID, $definition);
 
         $definition = new Definition('Funk\Tester\ExampleTester\EventDispatcher', [
-            new Reference(self::SPECIFICATION_TESTER.'.example.default'),
+            new Reference(self::SPECIFICATION_TESTER_ID.'.example.default'),
             new Reference(EventDispatcherExtension::DISPATCHER_ID),
         ]);
-        $container->setDefinition(self::SPECIFICATION_TESTER.'.example.event_dispatcher', $definition);
+        $container->setDefinition(self::SPECIFICATION_TESTER_ID.'.example.event_dispatcher', $definition);
 
         $definition = new Definition('Funk\Tester\ExampleTester\DefaultTester', [
             new Reference(EnvironmentExtension::MANAGER_ID),
             new Reference(CallExtension::CALL_CENTER_ID),
         ]);
-        $container->setDefinition(self::SPECIFICATION_TESTER.'.example.default', $definition);
+        $container->setDefinition(self::SPECIFICATION_TESTER_ID.'.example.default', $definition);
 
         $definition = new Definition('Funk\Specification\Locator\Spec', [
             '%paths.base%',
@@ -84,5 +89,21 @@ class TesterExtension extends BaseExtension
         ));
         $definition->addTag(SuiteExtension::SETUP_TAG, array('priority' => 20));
         $container->setDefinition(SuiteExtension::SETUP_TAG . '.autoload', $definition);
+    }
+
+    private function loadEnvironmentHandler(ContainerBuilder $container)
+    {
+        $definition = new Definition('Funk\Environment\Handler\Spec');
+        $definition->addTag(EnvironmentExtension::HANDLER_TAG, array('priority' => 50));
+        $container->setDefinition(EnvironmentExtension::HANDLER_TAG . '.spec', $definition);
+    }
+
+    public function loadInitializers(ContainerBuilder $container)
+    {
+        $definition = $container->getDefinition(EnvironmentExtension::HANDLER_TAG . '.spec');
+        $references = $this->processor->findAndSortTaggedServices($container, self::INITIALIZER_TAG);
+        foreach ($references as $reference) {
+            $definition->addMethodCall('registerInitializer', array($reference));
+        }
     }
 }

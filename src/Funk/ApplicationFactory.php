@@ -18,6 +18,7 @@ use Funk\Definition\ServiceContainer\SpecExtension;
 use Funk\Output\ServiceContainer\OutputExtension;
 use Funk\Tester\ServiceContainer\TesterExtension;
 use Funk\Autoloader\ServiceContainer\AutoloaderExtension;
+use Funk\Output\Formatter;
 
 class ApplicationFactory extends Base
 {
@@ -50,7 +51,7 @@ class ApplicationFactory extends Base
      */
     protected function getDefaultExtensions()
     {
-        $processor = new ServiceProcessor();
+        $processor = new ServiceProcessor;
 
         return array(
             // Testwork extensions
@@ -67,7 +68,7 @@ class ApplicationFactory extends Base
             // Funk extensions
             new AutoloaderExtension($processor),
             new TesterExtension($processor),
-            new OutputExtension($processor),
+            new OutputExtension('pretty', [], $processor),
         );
     }
 
@@ -78,7 +79,7 @@ class ApplicationFactory extends Base
      */
     protected function getEnvironmentVariableName()
     {
-        return 'ACCEPT_PARAMS';
+        return 'FUNK';
     }
 
     /**
@@ -88,13 +89,13 @@ class ApplicationFactory extends Base
      */
     protected function getConfigPath()
     {
-        $cwd = rtrim(getcwd(), DIRECTORY_SEPARATOR);
+        $cwd = rtrim(getcwd(), '/');
         $paths = array_filter(
             array(
-                $cwd . DIRECTORY_SEPARATOR . 'funk.yml',
-                $cwd . DIRECTORY_SEPARATOR . 'funk.yml.dist',
-                $cwd . DIRECTORY_SEPARATOR . 'config' . DIRECTORY_SEPARATOR . 'funk.yml',
-                $cwd . DIRECTORY_SEPARATOR . 'config' . DIRECTORY_SEPARATOR . 'funk.yml.dist',
+                $cwd . '/' . 'funk.yml',
+                $cwd . '/' . 'funk.yml.dist',
+                $cwd . '/' . 'config' . '/' . 'funk.yml',
+                $cwd . '/' . 'config' . '/' . 'funk.yml.dist',
             ),
             'is_file'
         );

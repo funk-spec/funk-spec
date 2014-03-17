@@ -8,6 +8,9 @@ use Behat\Testwork\Tester\SpecificationTester;
 use Funk\Tester\ExampleTester;
 use Symfony\Component\EventDispatcher\EventDispatcherInterface;
 use Symfony\Component\EventDispatcher\GenericEvent;
+use Behat\Testwork\Tester\Result\TestResult;
+use Behat\Testwork\Tester\Setup\SuccessfulSetup;
+use Behat\Testwork\Tester\Setup\SuccessfulTeardown;
 
 class SpecTester implements SpecificationTester
 {
@@ -30,5 +33,15 @@ class SpecTester implements SpecificationTester
         $this->dispatcher->dispatch('afterSpec', new GenericEvent($spec));
 
         return new TestResults($results);
+    }
+
+    public function setUp(Environment $env, $spec, $skip)
+    {
+        return new SuccessfulSetup;
+    }
+
+    public function tearDown(Environment $env, $spec, $skip, TestResult $result)
+    {
+        return new SuccessfulTeardown;
     }
 }

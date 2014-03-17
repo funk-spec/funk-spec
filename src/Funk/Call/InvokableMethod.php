@@ -3,18 +3,15 @@
 namespace Funk\Call;
 
 use Behat\Testwork\Call\Callee;
-use Funk\Specification\Locator\Iterator\Spec;
 
 class InvokableMethod implements Callee
 {
     private $method;
-    private $spec;
     private $description;
 
-    public function __construct(\ReflectionMethod $method, Spec $spec, $description = null)
+    public function __construct(\ReflectionMethod $method, $description = null)
     {
         $this->method = $method;
-        $this->spec = $spec;
         $this->description = $description;
     }
 
@@ -40,10 +37,7 @@ class InvokableMethod implements Callee
 
     public function getCallable()
     {
-        return [
-            $this->method->getDeclaringClass()->newInstance(),
-            $this->method->getName(),
-        ];
+        return $this->method;
     }
 
     public function getReflection()

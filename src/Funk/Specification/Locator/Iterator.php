@@ -4,7 +4,6 @@ namespace Funk\Specification\Locator;
 
 use Behat\Testwork\Specification\SpecificationIterator;
 use Behat\Testwork\Suite\Suite;
-use Funk\Call\InvokableMethod;
 
 class Iterator extends \FilterIterator implements SpecificationIterator
 {

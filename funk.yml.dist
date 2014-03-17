@@ -1,5 +1,14 @@
+
 default:
     autoload:
         'funk': '%paths.base%'
         'functional': '%paths.base%'
+
+    extensions:
+        Behat\MinkExtension\Extension:
+            base_url:  'http://localhost:8080/app_test.php'
+            sessions:
+                default:
+                    selenium2: ~
+
 

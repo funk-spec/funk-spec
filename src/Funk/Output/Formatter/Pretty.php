@@ -2,19 +2,23 @@
 
 namespace Funk\Output\Formatter;
 
-use Behat\Testwork\Output\CliFormatter;
+use Behat\Testwork\Output\Formatter;
 use Symfony\Component\EventDispatcher\Event;
 use Behat\Testwork\Tester\Result\TestResult;
 use Behat\Testwork\Output\Printer\OutputPrinter;
 use Behat\Testwork\Exception\ExceptionPresenter;
 
-class Pretty extends CliFormatter
+class Pretty implements Formatter
 {
+    private $printer;
+    private $presenter;
     private $basePath;
+    private $parameters = [];
 
     public function __construct(OutputPrinter $printer, ExceptionPresenter $presenter, $basePath)
     {
-        parent::__construct($printer, $presenter);
+        $this->printer = $printer;
+        $this->presenter = $presenter;
         $this->basePath = $basePath;
     }
 
@@ -38,11 +42,11 @@ class Pretty extends CliFormatter
 
     public function printSpecName(Event $event)
     {
-        $this->writeln();
+        $this->printer->writeln();
         $spec = $event->getSubject();
         $fqcn = $spec->getReflection()->getName();
-        $this->writeln(sprintf('<spec>%s</spec>', str_replace(['\\', '_'], ' ', $fqcn)));
-        $this->writeln();
+        $this->printer->writeln(sprintf('<spec>%s</spec>', str_replace(['\\', '_'], ' ', $fqcn)));
+        $this->printer->writeln();
     }
 
     public function printExampleResult(Event $event)
@@ -52,28 +56,43 @@ class Pretty extends CliFormatter
 
         switch ($event->getArgument('result')->getResultCode()) {
             case TestResult::PASSED:
-                $this->write(sprintf('<passed>✔ %s</passed>', $title));
+                $this->printer->write(sprintf('<passed>✔ %s</passed>', $title));
                 break;
             case TestResult::PENDING:
-                $this->write(sprintf('<pending>- %s</pending>', $title));
+                $this->printer->write(sprintf('<pending>- %s</pending>', $title));
                 break;
             case TestResult::FAILED:
-                $this->write(sprintf('<failed>✘ %s</failed>', $title));
+                $this->printer->write(sprintf('<failed>✘ %s</failed>', $title));
                 break;
             case TestResult::SKIPPED:
-                $this->write(sprintf('<skipped>! %s</skipped>', $title));
+                $this->printer->write(sprintf('<skipped>! %s</skipped>', $title));
                 break;
         }
 
         $path  = ltrim(str_replace($this->basePath, '', $example->getPath()), '/');
         $line  = $example->getReflection()->getStartLine();
-        $this->write(sprintf(' <comment>%s</comment> <lineno>+%d</lineno>', $path, $line));
+        $this->printer->write(sprintf(' <comment>%s</comment> <lineno>+%d</lineno>', $path, $line));
 
-        $this->writeln();
+        $this->printer->writeln();
 
         $result = $event->getArgument('result');
         if ($result->hasException()) {
-            $this->writeln($this->presentException($result->getException()));
+            $this->printer->writeln($this->presenter->presentException($result->getException()));
         }
+    }
+
+    public function getOutputPrinter()
+    {
+        return $this->printer;
+    }
+
+    public function getParameter($name)
+    {
+        return @$this->parameters[$name];
+    }
+
+    public function setParameter($name, $value)
+    {
+        $this->parameters[$name] = $value;
     }
 }
