@@ -14,11 +14,9 @@ use Behat\Testwork\ServiceContainer\ServiceProcessor;
 use Behat\Testwork\Suite\ServiceContainer\SuiteExtension;
 use Behat\Testwork\Hook\ServiceContainer\HookExtension;
 use Behat\Testwork\Specification\ServiceContainer\SpecificationExtension;
-use Funk\Definition\ServiceContainer\SpecExtension;
-use Funk\Output\ServiceContainer\OutputExtension;
+use Behat\Testwork\Autoloader\ServiceContainer\AutoloaderExtension;
 use Funk\Tester\ServiceContainer\TesterExtension;
-use Funk\Autoloader\ServiceContainer\AutoloaderExtension;
-use Funk\Output\Formatter;
+use Behat\Testwork\Output\ServiceContainer\OutputExtension;
 
 class ApplicationFactory extends Base
 {
@@ -64,11 +62,11 @@ class ApplicationFactory extends Base
             new FilesystemExtension($processor),
             new ExceptionExtension($processor),
             new HookExtension($processor),
+            new AutoloaderExtension(['%paths.base%/funk']),
+            new OutputExtension('pretty', [new \Funk\Output\Formatter\Factory\Pretty]),
 
             // Funk extensions
-            new AutoloaderExtension($processor),
             new TesterExtension($processor),
-            new OutputExtension('pretty', [], $processor),
         );
     }
 

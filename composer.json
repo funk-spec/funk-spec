@@ -3,7 +3,7 @@
     "description": "functional, integration, system spec framework",
     "require": {
         "php": ">=5.4",
-        "behat/behat": "~3.0@dev"
+        "behat/behat": "~3.0"
     },
     "require-dev": {
         "phpspec/phpspec": "~2.0@dev",
