@@ -1,5 +1,5 @@
 
-funk:
+default:
     autoload:
         'funk': '%paths.base%'
         'functional': '%paths.base%'
