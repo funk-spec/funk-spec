@@ -16,14 +16,13 @@ class PrettySpec extends ObjectBehavior
 {
     function let(
         OutputPrinter $printer,
-        ExceptionPresenter $ep,
         GenericEvent $event,
         InvokableMethod $method,
         \ReflectionMethod $refl,
         ExampleTestResult $result
     )
     {
-        $this->beConstructedWith($printer, $ep, '/current/path');
+        $this->beConstructedWith($printer, new ExceptionPresenter, '/current/path');
         $event->getSubject()->willReturn($method);
         $event->getArgument('result')->willReturn($result);
         $method->getReflection()->willReturn($refl);
@@ -35,7 +34,7 @@ class PrettySpec extends ObjectBehavior
 
     function it_prints_spec_name($event, Spec $spec, \ReflectionClass $refl, $result, $printer)
     {
-        $printer->writeln('')->shouldBeCalledTimes(2);
+        $printer->writeln()->shouldBeCalledTimes(2);
         $event->getSubject()->willReturn($spec);
         $spec->getReflection()->willReturn($refl);
         $refl->getName()->willReturn('A\Very\Useful\Namespace');
@@ -48,7 +47,7 @@ class PrettySpec extends ObjectBehavior
         $result->hasException()->willReturn(false);
         $result->getResultCode()->willReturn(TestResult::FAILED);
         $printer->write('<failed>✘ it does stuff</failed>')->shouldBeCalled();
-        $printer->writeln('')->shouldBeCalled();
+        $printer->writeln()->shouldBeCalled();
         $this->printExampleResult($event);
     }
 
@@ -57,21 +56,19 @@ class PrettySpec extends ObjectBehavior
         $result->hasException()->willReturn(false);
         $result->getResultCode()->willReturn(TestResult::PASSED);
         $printer->write('<passed>✔ it does stuff</passed>')->shouldBeCalled();
-        $printer->writeln('')->shouldBeCalled();
+        $printer->writeln()->shouldBeCalled();
         $this->printExampleResult($event);
     }
 
-    function it_prints_exception($event, $method, $result, $printer, $ep, \Exception $exception)
+    function it_prints_exception($event, $method, $result, $printer, \Exception $exception)
     {
+        $printer->writeln(Argument::type('string'))->shouldBeCalled();
         $result->hasException()->willReturn(true);
         $result->getException()->willReturn($exception);
         $result->getResultCode()->willReturn(TestResult::FAILED);
         $printer->write('<failed>✘ it does stuff</failed>')->shouldBeCalled();
-        $printer->writeln('')->shouldBeCalled();
+        $printer->writeln()->shouldBeCalled();
         $printer->getOutputVerbosity()->willReturn(1);
-
-        $ep->presentException($exception, 1)->shouldBeCalled()->willReturn('fail!');
-        $printer->writeln('fail!')->shouldBeCalled();
 
         $this->printExampleResult($event);
     }

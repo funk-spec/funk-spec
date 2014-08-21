@@ -62,7 +62,7 @@ class ApplicationFactory extends Base
             new FilesystemExtension($processor),
             new ExceptionExtension($processor),
             new HookExtension($processor),
-            new AutoloaderExtension(['%paths.base%/funk']),
+            new AutoloaderExtension,
             new OutputExtension('pretty', [new \Funk\Output\Formatter\Factory\Pretty]),
 
             // Funk extensions
