@@ -53,8 +53,9 @@ class Pretty implements Formatter
     {
         $example = $event->getSubject();
         $title = str_replace('_', ' ', $example->getReflection()->getName());
+        $result = $event->getArgument('result');
 
-        switch ($event->getArgument('result')->getResultCode()) {
+        switch ($result->getResultCode()) {
             case TestResult::PASSED:
                 $this->printer->write(sprintf('<passed>✔ %s</passed>', $title));
                 break;
@@ -71,11 +72,10 @@ class Pretty implements Formatter
 
         $path  = ltrim(str_replace($this->basePath, '', $example->getPath()), '/');
         $line  = $example->getReflection()->getStartLine();
-        $this->printer->write(sprintf(' <comment>%s</comment> <lineno>+%d</lineno>', $path, $line));
+        $this->printer->writeln(sprintf(' <comment>%s</comment> <lineno>+%d</lineno>', $path, $line));
 
-        $this->printer->writeln();
+        $this->printer->writeln($result->getStdOut());
 
-        $result = $event->getArgument('result');
         if ($result->hasException()) {
             $this->printer->writeln($this->presenter->presentException($result->getException()));
         }

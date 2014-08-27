@@ -54,4 +54,9 @@ class ExampleTestResult implements TestResult
 
         return static::PASSED;
     }
+
+    public function getStdOut()
+    {
+        return $this->callResult->getStdOut();
+    }
 }

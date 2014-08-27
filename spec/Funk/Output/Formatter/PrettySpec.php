@@ -30,6 +30,9 @@ class PrettySpec extends ObjectBehavior
         $refl->getName()->willReturn('it_does_stuff');
         $refl->getStartLine()->willReturn(42);
         $printer->write(' <comment>to/spec</comment> <lineno>+42</lineno>')->willReturn();
+        $printer->writeln(Argument::type('string'))->shouldBeCalled();
+        $printer->writeln(Argument::type('null'))->shouldBeCalled();
+        $result->getStdOut()->willReturn();
     }
 
     function it_prints_spec_name($event, Spec $spec, \ReflectionClass $refl, $result, $printer)
@@ -47,7 +50,6 @@ class PrettySpec extends ObjectBehavior
         $result->hasException()->willReturn(false);
         $result->getResultCode()->willReturn(TestResult::FAILED);
         $printer->write('<failed>✘ it does stuff</failed>')->shouldBeCalled();
-        $printer->writeln()->shouldBeCalled();
         $this->printExampleResult($event);
     }
 
@@ -56,18 +58,15 @@ class PrettySpec extends ObjectBehavior
         $result->hasException()->willReturn(false);
         $result->getResultCode()->willReturn(TestResult::PASSED);
         $printer->write('<passed>✔ it does stuff</passed>')->shouldBeCalled();
-        $printer->writeln()->shouldBeCalled();
         $this->printExampleResult($event);
     }
 
     function it_prints_exception($event, $method, $result, $printer, \Exception $exception)
     {
-        $printer->writeln(Argument::type('string'))->shouldBeCalled();
         $result->hasException()->willReturn(true);
         $result->getException()->willReturn($exception);
         $result->getResultCode()->willReturn(TestResult::FAILED);
         $printer->write('<failed>✘ it does stuff</failed>')->shouldBeCalled();
-        $printer->writeln()->shouldBeCalled();
         $printer->getOutputVerbosity()->willReturn(1);
 
         $this->printExampleResult($event);
