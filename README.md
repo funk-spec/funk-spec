@@ -9,7 +9,11 @@ A functional/system/integration test framework based on Behat/Testwork.
 
 ## Why ?
 
-Because. And also to let people who don't need a DSL like gherkin write specs.
+Because. And also to let people who don't need a DSL like gherkin write specs.  
+In fact it's more complicated. User acceptance tests shouldn't include technical details,  
+but it doen'nt mean some technical parts of the app shouldn't be tested.
+
+Moreover, some intermediate modules could be tested, standing between unit and system testing.
 
 ## How ?
 
