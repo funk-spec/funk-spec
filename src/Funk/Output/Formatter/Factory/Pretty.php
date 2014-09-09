@@ -36,15 +36,17 @@ class Pretty implements FormatterFactory
                 'spec'    => ['yellow'],
                 'comment' => ['cyan'],
                 'lineno'  => ['yellow'],
-                'diff-add'  => ['red'],
-                'diff-del'  => ['green'],
+                'diff-add'  => ['green'],
+                'diff-del'  => ['red'],
                 'code'  => ['cyan'],
                 'trace'  => ['white'],
                 'trace-class'  => ['magenta'],
-                'trace-funk'  => ['green'],
+                'trace-func'  => ['green'],
                 'trace-type'  => ['cyan'],
                 'trace-value'  => ['red'],
+                'trace-args'  => ['yellow'],
                 'hl'  => ['red'],
+                'value' => ['red']
                 //black, red, green, yellow, blue, magenta, cyan, white
             ]
         ]);
