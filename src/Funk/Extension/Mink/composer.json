@@ -1,0 +1,26 @@
+{
+    "name": "funk-spec/mink-extension",
+    "description": "functional, integration, system spec framework",
+    "require": {
+        "php": ">=5.4",
+        "behat/mink-extension": "~2.0"
+    },
+    "require-dev": {
+        "docteurklein/funk-spec": "*@dev",
+        "bossa/phpspec2-expect": "~1.0.2",
+        "behat/mink-selenium2-driver": "~1.1.1"
+    },
+    "autoload": {
+       "psr-4": { "Funk\\Extension\\Mink\\": "" }
+    },
+    "config": {
+        "bin-dir": "bin"
+    },
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "Klein Florian",
+            "email": "florian.klein@free.fr"
+        }
+    ]
+}
