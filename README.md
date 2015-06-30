@@ -44,4 +44,4 @@ class Customer implements Spec
 
 ```
 
-![img](https://raw2.github.com/docteurklein/funk-spec/master/funk.png)
+![img](https://raw.githubusercontent.com/docteurklein/funk-spec/master/funk.png)
