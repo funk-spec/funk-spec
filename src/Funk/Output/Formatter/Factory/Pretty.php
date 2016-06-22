@@ -28,7 +28,9 @@ class Pretty implements FormatterFactory
 
     protected function createOutputPrinterDefinition()
     {
-        $definition = new Definition('Behat\Testwork\Output\Printer\ConsoleOutputPrinter');
+        $definition = new Definition('Behat\Testwork\Output\Printer\StreamOutputPrinter', [
+            new Definition('Behat\Testwork\Output\Printer\Factory\ConsoleOutputFactory'),
+        ]);
         $definition->addMethodCall('setOutputStyles', [
             [
                 'failed'  => ['red'],
