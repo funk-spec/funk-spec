@@ -1,13 +1,12 @@
 {
-    "name": "funk-spec/funk-spec",
-    "description": "functional, integration, system spec framework",
+    "name": "docteurklein/funk-spec",
+    "description": "a test runner",
     "require": {
         "php": ">=5.4",
         "behat/behat": "~3.0"
     },
     "require-dev": {
-        "phpspec/phpspec": "~2.0",
-        "bossa/phpspec2-expect": "~1.0.2"
+        "phpspec/phpspec": "~2.0 || ~3.0 || ~4.0"
     },
     "autoload": {
        "psr-0": { "Funk": "src" }

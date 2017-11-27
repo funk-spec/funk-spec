@@ -9,6 +9,8 @@ class spec implements \Funk\Spec
 {
     function it_runs_specs()
     {
-        expect(shell_exec('bin/funk funk -s funk'))->toMatch('/✔/');
+        if (false === mb_strpos(shell_exec('bin/funk funk -s funk'), '✔')) {
+            throw new \Exception;
+        }
     }
 }
