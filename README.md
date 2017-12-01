@@ -17,6 +17,10 @@ Moreover, some intermediate modules could be tested, standing between unit and s
 ## How ?
 
 ``` bash
+composer require docteurklein/funk-spec --dev
+```
+
+``` bash
 
 vim funk/Feature/That/DoesStuff/ProfitsTo/Customer.php
 vendor/bin/funk funk
