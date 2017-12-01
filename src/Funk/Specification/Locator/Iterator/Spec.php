@@ -5,6 +5,10 @@ namespace Funk\Specification\Locator\Iterator;
 use Behat\Testwork\Specification\SpecificationIterator;
 use Behat\Testwork\Suite\Suite;
 
+use Roave\BetterReflection\BetterReflection;
+use Roave\BetterReflection\Reflector\ClassReflector;
+use Roave\BetterReflection\SourceLocator\Type\SingleFileSourceLocator;
+
 class Spec
 {
     private $suite;
@@ -30,12 +34,13 @@ class Spec
 
     public function getReflection()
     {
-        $class = ltrim(str_replace(
-            [$this->basePath, '/'],
-            ['', '\\'],
-            sprintf('%s/%s', $this->file->getPath(), $this->file->getBasename('.php'))
-        ), '\\');
+        $astLocator = (new BetterReflection())->astLocator();
+        $reflector = new ClassReflector(new SingleFileSourceLocator($this->file->getPathname(), $astLocator));
+        $classes = $reflector->getAllClasses();
 
-        return new \ReflectionClass($class);
+
+        if (!empty(array_filter($classes))) {
+            return new \ReflectionClass(current($classes)->getName());
+        }
     }
 }

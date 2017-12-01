@@ -1,7 +1,8 @@
 default:
     autoload:
-        functional: '%paths.base%'
-        funk: '%paths.base%'
+        psr0:
+            functional: ['%paths.base%']
+            funk: ['%paths.base%']
 
     suites:
         funk: ~

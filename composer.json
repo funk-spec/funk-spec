@@ -3,7 +3,8 @@
     "description": "a test runner",
     "require": {
         "php": ">=5.4",
-        "behat/behat": "~3.0"
+        "behat/behat": "~3.0",
+        "roave/better-reflection": "^2.0"
     },
     "require-dev": {
         "phpspec/phpspec": "~2.0 || ~3.0 || ~4.0"

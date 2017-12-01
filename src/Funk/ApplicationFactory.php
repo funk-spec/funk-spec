@@ -14,13 +14,21 @@ use Behat\Testwork\ServiceContainer\ServiceProcessor;
 use Behat\Testwork\Suite\ServiceContainer\SuiteExtension;
 use Behat\Testwork\Hook\ServiceContainer\HookExtension;
 use Behat\Testwork\Specification\ServiceContainer\SpecificationExtension;
-use Behat\Testwork\Autoloader\ServiceContainer\AutoloaderExtension;
-use Funk\Tester\ServiceContainer\TesterExtension;
 use Behat\Testwork\Output\ServiceContainer\OutputExtension;
+use Funk\Tester\ServiceContainer\TesterExtension;
+use Funk\Autoloader\ServiceContainer\AutoloaderExtension;
+use Composer\Autoload\ClassLoader;
 
 class ApplicationFactory extends Base
 {
     const VERSION = '0.1-dev';
+
+    private $classLoader;
+
+    public function __construct(ClassLoader $classLoader)
+    {
+        $this->classLoader = $classLoader;
+    }
 
     /**
      * Returns application name.
@@ -62,10 +70,10 @@ class ApplicationFactory extends Base
             new FilesystemExtension($processor),
             new ExceptionExtension($processor),
             new HookExtension($processor),
-            new AutoloaderExtension,
             new OutputExtension('pretty', [new \Funk\Output\Formatter\Factory\Pretty]),
 
             // Funk extensions
+            new AutoloaderExtension($this->classLoader),
             new TesterExtension($processor),
         );
     }

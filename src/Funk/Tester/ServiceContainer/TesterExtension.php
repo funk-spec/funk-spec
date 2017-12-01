@@ -32,7 +32,6 @@ class TesterExtension extends BaseExtension
     public function load(ContainerBuilder $container, array $config)
     {
         parent::load($container, $config);
-        $this->loadAutoloadSuiteSetup($container);
         $this->loadEnvironmentHandler($container);
     }
 
@@ -41,14 +40,6 @@ class TesterExtension extends BaseExtension
         parent::process($container);
         $this->loadInitializers($container);
     }
-
-    /**
-     * Loads exercise controller.
-     *
-     * @param ContainerBuilder $container
-     * @param Boolean          $strict
-     * @param Boolean          $skip
-     */
 
     /**
      * Loads Specification tester.
@@ -80,15 +71,6 @@ class TesterExtension extends BaseExtension
         ]);
         $definition->addTag(SpecificationExtension::LOCATOR_TAG);
         $container->setDefinition(self::SPEC_LOCATOR_ID, $definition);
-    }
-
-    private function loadAutoloadSuiteSetup(ContainerBuilder $container)
-    {
-        $definition = new Definition('Funk\Suite\Setup\Autoload', array(
-            new Reference(AutoloaderExtension::CLASS_LOADER_ID),
-        ));
-        $definition->addTag(SuiteExtension::SETUP_TAG, array('priority' => 20));
-        $container->setDefinition(SuiteExtension::SETUP_TAG . '.autoload', $definition);
     }
 
     private function loadEnvironmentHandler(ContainerBuilder $container)

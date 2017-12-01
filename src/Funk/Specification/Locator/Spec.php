@@ -33,7 +33,7 @@ class Spec implements SpecificationLocator
     private function getFilesIterator($locator)
     {
         $path = $this->findAbsolutePath($locator);
-        if (!is_dir($path)) {
+        if (is_file($path)) {
             return new \ArrayIterator([new \SplFileInfo($path)]);
         }
 

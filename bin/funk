@@ -2,13 +2,13 @@
 <?php
 
 if (is_dir($vendor = getcwd() . '/vendor')) {
-    require $vendor . '/autoload.php';
+    $loader = require($vendor . '/autoload.php');
 }
 else if (is_dir($vendor = __DIR__ . '/../vendor')) {
-    require $vendor . '/autoload.php';
+    $loader = require($vendor . '/autoload.php');
 }
 else if (is_dir($vendor = __DIR__ . '/../../..')) {
-    require $vendor . '/autoload.php';
+    $loader = require($vendor . '/autoload.php');
 }
 else {
     die(
@@ -18,5 +18,5 @@ else {
     );
 }
 
-$factory = new \Funk\ApplicationFactory;
+$factory = new \Funk\ApplicationFactory($loader);
 $factory->createApplication()->run();
